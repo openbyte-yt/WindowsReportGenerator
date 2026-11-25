@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151719">
+  <meta name="description" content="Download the Windows 10/11 computer report tool and verify its SHA-256 checksum.">
+  <title>Windows Computer Report</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #151719;
+      --surface: #1c2023;
+      --border: #343a3f;
+      --text: #e8e9e7;
+      --muted: #a0a6aa;
+      --accent: #a9d4e8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main {
+      width: min(100% - 40px, 650px);
+      margin: 0 auto;
+      padding: 78px 0 56px;
+    }
+
+    .platform {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      max-width: 590px;
+      margin: 0;
+      font-size: clamp(27px, 5vw, 35px);
+      line-height: 1.2;
+      font-weight: 620;
+      letter-spacing: -.035em;
+    }
+
+    .description {
+      margin: 17px 0 25px;
+      color: #b5babd;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .download {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid #8bbbd2;
+      border-radius: 5px;
+      background: #8bbbd2;
+      color: #10191e;
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .download:hover { background: #a2cde0; border-color: #a2cde0; }
+    .download:focus-visible, .copy:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .checksum {
+      margin-top: 49px;
+      padding-top: 21px;
+      border-top: 1px solid var(--border);
+    }
+
+    .checksum-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .checksum-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .algorithm {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .hash-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--surface);
+    }
+
+    code {
+      min-width: 0;
+      flex: 1;
+      color: #d5dadd;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+
+    .copy {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 1px solid #4a535a;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .copy:hover { background: #2a3034; }
+
+    .note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    #copy-status {
+      min-height: 18px;
+      margin: 8px 0 0;
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    @media (max-width: 520px) {
+      main { padding-top: 52px; }
+      .hash-row { align-items: flex-start; flex-direction: column; }
+      .copy { align-self: flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="platform">Windows 10 / 11</p>
+
+    <h1>Get Instance report of your Windows 10/11 Computer</h1>
+    <p class="description">Download the report tool below. You can check the file's SHA-256 value before running it.</p>
+
+    <a class="download" id="download-link" href="#">Download report</a>
+
+    <section class="checksum" aria-labelledby="checksum-title">
+      <div class="checksum-heading">
+        <h2 id="checksum-title">Binary authenticity</h2>
+        <span class="algorithm">SHA-256</span>
+      </div>
+
+      <div class="hash-row">
+        <code id="sha256">4db05cb705a1d3e8f919b555e6b6b2e7d66eb91a217bf5722c015d390b249efe</code>
+        <button class="copy" id="copy-button" type="button">Copy</button>
+      </div>
+      <p class="note">Compare this value with the downloaded file's SHA-256 checksum.</p>
+      <p id="copy-status" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script>
+    // Add your direct file URL here.
+    const DOWNLOAD_URL = "PASTE_YOUR_DOWNLOAD_LINK_HERE";
+
+    const downloadLink = document.getElementById("download-link");
+    const copyButton = document.getElementById("copy-button");
+    const hashText = document.getElementById("sha256").textContent.trim();
+    const copyStatus = document.getElementById("copy-status");
+
+    if (DOWNLOAD_URL !== "PASTE_YOUR_DOWNLOAD_LINK_HERE") {
+      downloadLink.href = DOWNLOAD_URL;
+    } else {
+      downloadLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        copyStatus.textContent = "Add your download URL in the HTML file first.";
+      });
+    }
+
+    copyButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(hashText);
+      } catch (error) {
+        const temporaryInput = document.createElement("textarea");
+        temporaryInput.value = hashText;
+        temporaryInput.setAttribute("readonly", "");
+        temporaryInput.style.position = "fixed";
+        temporaryInput.style.left = "-9999px";
+        document.body.appendChild(temporaryInput);
+        temporaryInput.select();
+        document.execCommand("copy");
+        temporaryInput.remove();
+      }
+
+      copyButton.textContent = "Copied";
+      copyStatus.textContent = "Checksum copied.";
+      window.setTimeout(() => { copyButton.textContent = "Copy"; }, 1600);
+    });
+  </script>
+</body>
+</html>
